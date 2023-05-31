@@ -27,13 +27,6 @@ fun Route.routes() {
         }
     }
 
-    route("/html_file") {
-        get {
-            val file = File("src\\main\\resources\\files\\test.html")
-            call.respondFile(file)
-        }
-    }
-
     route("/directory/{path...}") {
         get {
             val path = call.parameters.getAll("path")?.joinToString("/")
@@ -75,7 +68,11 @@ fun Route.routes() {
                     }
                 }
             } else {
-                call.respondText(file.readText(), status = HttpStatusCode.BadRequest)
+                if (file.extension == "html") {
+                    call.respondFile(file)
+                } else {
+                    call.respondText(file.readText(), status = HttpStatusCode.BadRequest)
+                }
             }
         }
     }
